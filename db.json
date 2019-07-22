@@ -47,6 +47,18 @@
       "name": "Little Green Men",
       "image": "http://www.pngmart.com/files/3/Toy-Story-Alien-PNG-File.png",
       "likes": -2
+    },
+    {
+      "name": "Plushie Shark",
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFO86m2X7vMPYYnI7nNiUxp4f39HxIVTx2_AN_CoItgCysWeZg6A",
+      "likes": 0,
+      "id": 9
+    },
+    {
+      "name": "Plushie Simba",
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSh4IgYMXGq2SFuqvcSXy_D6szfJbYXSzepjngaCvb-7ou9yILO2g",
+      "likes": 1,
+      "id": 10
     }
   ]
 }
