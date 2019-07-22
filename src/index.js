@@ -1,103 +1,101 @@
-const URL = 'http://localhost:3000/toys'
+document.addEventListener('DOMContentLoaded', (event) => {
+  // console.log('DOM fully loaded and parsed');
+});
 const addBtn = document.querySelector('#new-toy-btn')
-const toyFormCont = document.querySelector('.container')
-const toyForm = document.querySelector('.add-toy-form')
-const toyCollection = document.getElementById('toy-collection')
+const toyForm = document.querySelector('.container')
 let addToy = false
 
-// YOUR CODE HERE
 
-toyForm.addEventListener('submit',function(e){
-  e.preventDefault();
-  let toyName = e.target.children.name.value
-  let toyImgUrl = e.target.children.image.value
-  e.target.children.name.value = ''
-  e.target.children.image.value = ''
-  createNewToy(toyName,toyImgUrl)
-  .then(json => createToyCard(json))
-})
 
 addBtn.addEventListener('click', () => {
   // hide & seek with the form
   addToy = !addToy
   if (addToy) {
-    toyFormCont.style.display = 'block'
-    // submit listener here
+    toyForm.style.display = 'block'
   } else {
-    toyFormCont.style.display = 'none'
+    toyForm.style.display = 'none'
   }
 })
 
-function thatsSoFetch(){
-  fetch(URL)
-  .then(res => res.json())
-  .then(json => {
-    console.log(json)
-     createToyCards(json)
-  })
+
+function pageLoad() {
+  const toyUrl = 'http://localhost:3000/toys'
+  return fetch(toyUrl)
+    .then(res => res.json())
+    .then(data => getToys(data))
 }
 
-function createToyCards(toys){
-  for(let i = 0;i < toys.length;i++){
-    let toy = toys[i];
-    createToyCard(toy)
-    }
+function getToys(data) {
+  // console.log(data)
+  for (let i = 0; i < data.length; i++) {
+    const toy = data[i];
+    displayToy(toy)
+  }
 }
 
-function createToyCard(toy){
-  let toyDivCard = document.createElement('div')
-  toyDivCard.className = 'card' 
-  let toyh2 = document.createElement('h2')
-  toyh2.innerText = toy.name
+function displayToy(toy) {
+  // console.log(toy)
+  let toyCollection = document.getElementById('toy-collection')
+  let toyCard = document.createElement('div')
+  toyCard.className = 'card'
+  let h2 = document.createElement('h2')
+  h2.innerText = toy.name
+  toyCard.appendChild(h2)
   let toyImg = document.createElement('img')
   toyImg.src = toy.image
   toyImg.className = 'toy-avatar'
-  let toyLikes = document.createElement('p')
-  toyLikes.innerText = toy.likes + " Likes";
-  let toyLikeButton = document.createElement('button')
-  toyLikeButton.className = 'toy-btn'
-  toyLikeButton.innerText = "Like 💖"
-  toyLikeButton.addEventListener('click', function(){
-    toy.likes++
-    fetch(URL + "/" + toy.id, {
+  toyCard.appendChild(toyImg)
+  let p = document.createElement('p')
+  p.innerText = `${toy.likes} Likes`
+  toyCard.appendChild(p)
+  let likeButton = document.createElement('button')
+  likeButton.className = 'button'
+  likeButton.innerText = 'Like Me!'
+  likeButton.addEventListener('click', function(ev) {
+    ev.preventDefault()
+    return fetch(`http://localhost:3000/toys/${toy.id}`, {
       method: 'PUT',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({name: toy.name, image: toy.image, likes: toy.likes})
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        id: toy.id,
+        name: toy.name,
+        image: toy.image,
+        likes: toy.likes + 1
+      })
     })
-    .then(res => res.json())
-    .then(json => {
-      toyLikes.innerText = toy.likes + " Likes";
-    })
-  })
-  toyCollection.appendChild(toyDivCard)
-  toyDivCard.appendChild(toyh2)
-  toyDivCard.appendChild(toyImg)
-  toyDivCard.appendChild(toyLikes)
-  toyDivCard.appendChild(toyLikeButton)
+  })  
+  toyCard.appendChild(likeButton)
+  toyCollection.appendChild(toyCard)
 }
 
-function createNewToy(name,url){
-  return fetch(URL,{
+function addNewToy() {
+  let newToyForm = document.querySelector('.add-toy-form')
+  newToyForm.addEventListener('submit', createToy)
+}
+
+function createToy(ev) {
+  ev.preventDefault()
+  let newToyName = ev.target[0].value
+  let newToyImg = ev.target[1].value
+  return fetch('http://localhost:3000/toys', {
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({name: name, image: url, likes: 0})
+    headers: {
+      'Content-Type' : 'application/json'
+    },
+    body: JSON.stringify({
+      name: newToyName,
+      image: newToyImg,
+      likes: 0
+    })
   })
-  .then(res => res.json())
 }
 
-// function addLike(toy, toyLikes){
-//   toy.likes++
-//   fetch(URL + "/" + toy.id, {
-//     method: 'PUT',
-//     headers: {'Content-Type': 'application/json'},
-//     body: JSON.stringify({name: toy.name, image: toy.image, likes: toy.likes})
-//   })
-//   .then(res => res.json())
-//   .then(json => {
-//     toyLikes.innerText = toy.likes + " Likes";
-//   })
-// }
+function main() {
+  pageLoad()
+  addNewToy()
 
-thatsSoFetch()
+}
 
-
+main()

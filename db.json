@@ -10,7 +10,7 @@
       "id": 2,
       "name": "Buzz Lightyear",
       "image": "http://www.pngmart.com/files/6/Buzz-Lightyear-PNG-Transparent-Picture.png",
-      "likes": 8
+      "likes": 10
     },
     {
       "id": 3,
@@ -59,6 +59,12 @@
       "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSh4IgYMXGq2SFuqvcSXy_D6szfJbYXSzepjngaCvb-7ou9yILO2g",
       "likes": 1,
       "id": 10
+    },
+    {
+      "name": "GusGus",
+      "image": "https://www.syfy.com/sites/syfy/files/styles/1200x680/public/2018/05/cinderellagusgus_0.jpg",
+      "likes": 0,
+      "id": 11
     }
   ]
 }
