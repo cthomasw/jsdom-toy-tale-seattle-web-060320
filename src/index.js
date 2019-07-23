@@ -1,10 +1,7 @@
-document.addEventListener('DOMContentLoaded', (event) => {
-  // console.log('DOM fully loaded and parsed');
-});
+const allToysUrl = 'http://localhost:3000/toys'
 const addBtn = document.querySelector('#new-toy-btn')
 const toyForm = document.querySelector('.container')
 let addToy = false
-
 
 
 addBtn.addEventListener('click', () => {
@@ -17,85 +14,81 @@ addBtn.addEventListener('click', () => {
   }
 })
 
-
-function pageLoad() {
-  const toyUrl = 'http://localhost:3000/toys'
-  return fetch(toyUrl)
-    .then(res => res.json())
-    .then(data => getToys(data))
+function loadEmUp(allToysUrl) {
+  return fetch(allToysUrl)
+  .then(res => res.json())
+  .then(data => displayAllToys(data))
 }
 
-function getToys(data) {
-  // console.log(data)
+function displayAllToys(data) {
   for (let i = 0; i < data.length; i++) {
     const toy = data[i];
-    displayToy(toy)
+    createToyCard(toy)
   }
 }
 
-function displayToy(toy) {
-  // console.log(toy)
-  let toyCollection = document.getElementById('toy-collection')
+function createToyCard(toy) {
+  let toyCol = document.getElementById('toy-collection')
   let toyCard = document.createElement('div')
   toyCard.className = 'card'
   let h2 = document.createElement('h2')
   h2.innerText = toy.name
   toyCard.appendChild(h2)
   let toyImg = document.createElement('img')
-  toyImg.src = toy.image
   toyImg.className = 'toy-avatar'
+  toyImg.src = toy.image
   toyCard.appendChild(toyImg)
-  let p = document.createElement('p')
-  p.innerText = `${toy.likes} Likes`
-  toyCard.appendChild(p)
-  let likeButton = document.createElement('button')
-  likeButton.className = 'button'
-  likeButton.innerText = 'Like Me!'
-  likeButton.addEventListener('click', function(ev) {
-    ev.preventDefault()
+  let toyLikes = document.createElement('p')
+  toyLikes.innerText = `${toy.likes} Likes`
+  toyCard.appendChild(toyLikes)
+  let likeMe = document.createElement('button')
+  likeMe.innerText = 'Like me!'
+
+  likeMe.addEventListener('click', function(ev) {
     return fetch(`http://localhost:3000/toys/${toy.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        id: toy.id,
         name: toy.name,
         image: toy.image,
-        likes: toy.likes + 1
+        likes: toy.likes+1,
+        id: toy.id
       })
     })
-  })  
-  toyCard.appendChild(likeButton)
-  toyCollection.appendChild(toyCard)
+  })
+  toyCard.appendChild(likeMe)
+  toyCol.appendChild(toyCard)
 }
 
 function addNewToy() {
   let newToyForm = document.querySelector('.add-toy-form')
-  newToyForm.addEventListener('submit', createToy)
+  newToyForm.addEventListener('submit', createAToy)
 }
 
-function createToy(ev) {
+function createAToy(ev) {
   ev.preventDefault()
-  let newToyName = ev.target[0].value
-  let newToyImg = ev.target[1].value
-  return fetch('http://localhost:3000/toys', {
+  let name = ev.target.name.value
+  let image = ev.target.image.value
+  fetch(allToysUrl, {
     method: 'POST',
     headers: {
       'Content-Type' : 'application/json'
     },
     body: JSON.stringify({
-      name: newToyName,
-      image: newToyImg,
+      name: name,
+      image: image,
       likes: 0
     })
-  })
+  }).then(res => res.json())
 }
+
+
 
 function main() {
-  pageLoad()
+  loadEmUp(allToysUrl)
   addNewToy()
-
 }
 
-main()
+main();
